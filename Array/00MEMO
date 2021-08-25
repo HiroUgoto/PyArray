@@ -1,0 +1,4 @@
+f2py3 -c -m rayleigh_fortran rayleigh.f90
+
+print(rayleugh_fortran.__doc__)で引数を確認しておくこと
+（順番が変わる）
