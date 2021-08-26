@@ -323,6 +323,12 @@ def connect_phase_velocity(freq_list,pv_list,freq_range,plot_flag=True):
     return freq_con, vel_con
 
 #-----------------------------------------------------------------#
+def model_phase_velocity_py(model,fmax=20,print_flag=False,plot_flag=False):
+    freq,c,hv = rayleigh.search_fundamental_mode_py(model["nlay"],model["vp"],model["vs"],model["density"],model["thick"],fmax=fmax,print_flag=print_flag,plot_flag=plot_flag)
+
+    return freq, c, hv
+
+#-----------------------------------------------------------------#
 def model_phase_velocity(model,fmax=20,print_flag=False,plot_flag=False):
     freq,c,hv = rayleigh.search_fundamental_mode(model["nlay"],model["vp"],model["vs"],model["density"],model["thick"],fmax=fmax,print_flag=print_flag,plot_flag=plot_flag)
 

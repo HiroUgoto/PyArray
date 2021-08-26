@@ -207,31 +207,44 @@ def root_finding(func,xmin,xmax,args):
     return xmax
 
 #--------------------------------------------------------#
-def search_fundamental_mode(nlay,vp,vs,rho,thick,fmax=20,nfreq=100,print_flag=False,plot_flag=False):
+def search_fundamental_mode_py(nlay,vp,vs,rho,thick,fmax=20,nfreq=100,print_flag=False,plot_flag=False):
     freq = np.linspace(fmax/nfreq,fmax,nfreq)
-    c,hv = rayleigh_fortran.search_fondamantal_mode(vp,vs,rho,thick,freq,nlay)
+    # c,hv = rayleigh_fortran.search_fondamantal_mode(vp,vs,rho,thick,freq,nlay)
 
-    # cmax = np.max(vs)*0.999
-    # cmin = np.min(vs)*0.7
-    # c = np.zeros_like(freq)
-    # hv = np.zeros_like(freq)
+    cmax = np.max(vs)*0.999
+    cmin = np.min(vs)*0.90
+    nc = 1000
+    dc = (cmax-cmin)/nc
 
-    # if print_flag:
-    #     print("------------------------------------")
-    #
-    # omega = 2*np.pi*freq[0]
-    # kmax = omega/cmax
-    # kmin = omega/cmin
-    # for i,f in enumerate(freq):
-    #     omega = 2*np.pi*f
-    #     k = root_finding(set_nonlinear_function,kmin,kmax,args=(nlay,vp,vs,rho,thick,omega))
-    #     B = set_B_matrix(nlay,vp,vs,rho,thick,omega,k)
-    #     c[i] = np.real(omega/k)
-    #     hv[i] = np.abs(B[0,1]) / np.abs(B[0,0])
-    #     if print_flag:
-    #         print("  {:4.2f}[Hz]  {:4.0f}[m/s]".format(f,c[i]))
-    #     kmax = omega/(c[i]*1.0)
-    #     kmin = omega/cmin
+    copt = np.zeros_like(freq)
+    hvopt = np.zeros_like(freq)
+
+    if print_flag:
+        print("------------------------------------")
+
+    for i,f in enumerate(freq):
+        omega = 2*np.pi*f
+
+        ic_flag = 0
+        for ic in range(nc):
+            c = cmin + dc*ic
+            k = omega/c
+
+            B = set_B_matrix(nlay,vp,vs,rho,thick,omega,k)
+            detB = B[0,0]*B[1,1] - B[0,1]*B[1,0]
+
+            if ic_flag == 0:
+                if np.isfinite(detB):
+                    ic_flag = 1
+                    copt[i] = c
+                    detBopt = detB
+            else:
+                if detBopt * detB < 0.0:
+                    hvopt[i] = abs(B[0,1])/abs(B[0,0])
+                    copt[i] = c
+                    break
+        if print_flag:
+            print("  {0:.2f} Hz, {1:.1f} m/s".format(f,copt[i]))
 
 
     if plot_flag:
@@ -240,8 +253,8 @@ def search_fundamental_mode(nlay,vp,vs,rho,thick,fmax=20,nfreq=100,print_flag=Fa
         ax2 = fig.add_subplot(212)
         ax2.set_yscale("log")
 
-        ax1.plot(freq,c,color='k',lw=1)
-        ax2.plot(freq,hv,color='k',lw=1)
+        ax1.plot(freq,copt,color='k',lw=1)
+        ax2.plot(freq,hvopt,color='k',lw=1)
 
         ax1.set_ylabel("phase velocity [m/s]")
         ax2.set_ylabel("ellipse ratio")
@@ -249,6 +262,13 @@ def search_fundamental_mode(nlay,vp,vs,rho,thick,fmax=20,nfreq=100,print_flag=Fa
 
         plt.subplots_adjust()
         plt.show()
+
+    return freq,copt,hvopt
+
+#--------------------------------------------------------#
+def search_fundamental_mode(nlay,vp,vs,rho,thick,fmax=20,nfreq=100,print_flag=False,plot_flag=False):
+    freq = np.linspace(fmax/nfreq,fmax,nfreq)
+    c,hv = rayleigh_fortran.search_fondamantal_mode(vp,vs,rho,thick,freq,nlay)
 
     return freq,c,hv
 
