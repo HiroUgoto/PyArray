@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.optimize
-from . import rayleigh_fortran
+# from . import rayleigh_fortran
 import matplotlib.pyplot as plt
 import sys
 
