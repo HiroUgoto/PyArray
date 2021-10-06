@@ -368,11 +368,28 @@ def hv_spactra(param,segment_data,plot_flag=True):
 
     hv = signal.smoothing(np.sqrt(H1+H2)/np.sqrt(UD),nw)
 
+
     if plot_flag:
         plt.figure()
         plt.xscale("log")
         plt.yscale("log")
+        plt.xlabel("frequency (Hz)")
+        plt.ylabel("H/V spectrum")
         plt.plot(freq[0:nyq],hv[0:nyq])
+        plt.grid()
         plt.show()
 
+
     return freq[0:nyq],hv[0:nyq]
+
+#-----------------------------------------------------------------#
+def compare_hvsr(freq0,hv0,freq1,hv1):
+        plt.figure()
+        plt.xscale("log")
+        plt.yscale("log")
+        plt.xlabel("frequency (Hz)")
+        plt.ylabel("H/V spectrum")
+        plt.plot(freq0,hv0,marker='.',color='k')
+        plt.plot(freq1,hv1,color='r')
+        plt.grid()
+        plt.show()

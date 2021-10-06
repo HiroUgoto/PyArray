@@ -8,8 +8,8 @@ def read_data_file(file_name):
     return ud
 
 def read_data_file_3d(file_name):
-    ud,ns,ew = np.loadtxt(file_name,usecols=(0,1,2),unpack=True)
-    return ud,ns,ew
+    ud,ew,ns = np.loadtxt(file_name,usecols=(0,1,2),unpack=True)
+    return ud,ew,ns
 
 def output_data_file(file_name,param,freq,vel):
     if not os.path.isdir(param["output_dir"]):
@@ -179,4 +179,9 @@ def read_pv_files(file_lists):
 def output_pv_file(file_name,freq,vel):
     output_file_name = file_name
     output_line = np.c_[freq,vel]
+    np.savetxt(output_file_name,output_line)
+
+def output_hv_file(file_name,freq,hv):
+    output_file_name = file_name
+    output_line = np.c_[freq,hv]
     np.savetxt(output_file_name,output_line)
