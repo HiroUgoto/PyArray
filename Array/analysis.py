@@ -18,7 +18,8 @@ def segment_selection(param,data,print_flag=True):
     v_list = []
     rms_stack = np.zeros(2*nseg)
 
-    for d in data:
+    for d_raw in data:
+        d = signal.bandpass(d_raw,fs,0.1,50)
         v_raw = np.resize(d,[nseg,nt]).copy()
         v_raw2 = np.resize(np.roll(d,int(nt/2)),[nseg,nt]).copy()
         v = signal.detrend(np.vstack((v_raw,v_raw2)))
@@ -46,12 +47,16 @@ def segment_selection(param,data,print_flag=True):
 
     return segment_data
 
-def segment_selection_3d(param,data,print_flag=True):
+def segment_selection_3d(param,data,print_flag=True,plot_flag=False):
     fs = param["sampling_frequency"]
     tseg = param["segment_length"]
     mseg = param["max_number_segment"]
 
-    ud,ns,ew = data[0]
+    ud_raw,ns_raw,ew_raw = data[0]
+
+    ud = signal.bandpass(ud_raw,fs,0.1,50)
+    ew = signal.bandpass(ew_raw,fs,0.1,50)
+    ns = signal.bandpass(ns_raw,fs,0.1,50)
 
     nt = int(tseg*fs)
     nseg = len(ud)//nt
@@ -85,6 +90,30 @@ def segment_selection_3d(param,data,print_flag=True):
         print("+ selected segment :",mseg,"/",nseg)
         print("+ rms ratio        :",selected_rms,"/",total_rms)
         print("------------------------------------")
+
+    if plot_flag:
+        fig = plt.figure()
+        plt.rcParams['xtick.direction'] = 'in'
+        plt.rcParams['ytick.direction'] = 'in'
+
+        ax1 = fig.add_subplot(311)
+        ax2 = fig.add_subplot(312)
+        ax3 = fig.add_subplot(313)
+
+        ax1.plot(segment_data[0][0],color='k',lw=1)
+        ax2.plot(segment_data[0][1],color='k',lw=1)
+        ax3.plot(segment_data[0][2],color='k',lw=1)
+
+        ax1.set_xticklabels([])
+        ax2.set_xticklabels([])
+        ax3.set_xlabel("time samples")
+
+        ax1.text(0.02,0.85,"UD",transform=ax1.transAxes)
+        ax2.text(0.02,0.85,"H1",transform=ax2.transAxes)
+        ax3.text(0.02,0.85,"H2",transform=ax3.transAxes)
+
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0, hspace=0)
+        plt.show()
 
     return segment_data
 
@@ -341,6 +370,14 @@ def compare_phase_velocity(freq0,vel0,freq1,vel1):
         plt.ylabel("phase_velocity (m/s)")
         plt.scatter(freq0,vel0,marker='.',color='k')
         plt.plot(freq1,vel1,color='r')
+        plt.grid()
+        plt.show()
+
+def plot_phase_velocity(freq,vel):
+        plt.figure()
+        plt.xlabel("frequency (Hz)")
+        plt.ylabel("phase_velocity (m/s)")
+        plt.plot(freq,vel,color='r')
         plt.grid()
         plt.show()
 
