@@ -19,7 +19,7 @@ def segment_selection(param,data,print_flag=True):
     rms_stack = np.zeros(2*nseg)
 
     for d_raw in data:
-        d = signal.bandpass(d_raw,fs,0.1,50)
+        d = signal.bandpass(d_raw,fs,0.05,50)
         v_raw = np.resize(d,[nseg,nt]).copy()
         v_raw2 = np.resize(np.roll(d,int(nt/2)),[nseg,nt]).copy()
         v = signal.detrend(np.vstack((v_raw,v_raw2)))
@@ -54,9 +54,9 @@ def segment_selection_3d(param,data,print_flag=True,plot_flag=False):
 
     ud_raw,ns_raw,ew_raw = data[0]
 
-    ud = signal.bandpass(ud_raw,fs,0.1,50)
-    ew = signal.bandpass(ew_raw,fs,0.1,50)
-    ns = signal.bandpass(ns_raw,fs,0.1,50)
+    ud = signal.bandpass(ud_raw,fs,0.05,50)
+    ew = signal.bandpass(ew_raw,fs,0.05,50)
+    ns = signal.bandpass(ns_raw,fs,0.05,50)
 
     nt = int(tseg*fs)
     nseg = len(ud)//nt
@@ -220,7 +220,10 @@ def cca_coeff(param,segment_data,plot_flag=True,print_flag=True):
         plt.plot(freq[0:nyq],ns_ratio[0:nyq])
         plt.show()
 
-    freq_max = freq[np.amin(np.where(ns_ratio[0:nyq]>=1.0))]
+    if len(np.where(ns_ratio[0:nyq]>=1.0)[0]) == 0:
+        freq_max = 0.0
+    else:
+        freq_max = freq[np.amin(np.where(ns_ratio[0:nyq]>=1.0))]
     freq_min = freq[np.argmin(ns_ratio[0:nyq])]
     param["freq_max"] = freq_max
     if print_flag:
@@ -287,7 +290,10 @@ def cca_phase_velocity(param,freq,cca_coeff,fmax=20.0,plot_flag=True):
 
     if plot_flag:
         plt.figure()
+        plt.xlabel("frequency (Hz)")
+        plt.ylabel("phase velocity (m/s)")
         plt.plot(freq_cca,velocity_cca)
+        plt.grid()
         plt.show()
 
     return np.array(freq_cca), np.array(velocity_cca)

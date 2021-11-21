@@ -8,7 +8,7 @@ def detrend(data):
 def cos_taper(data):
     taper_data = []
     for line in data:
-        w = scipy.signal.tukey(len(line),0.5)
+        w = scipy.signal.tukey(len(line),0.05)
         taper_data += [w*line]
     return np.array(taper_data)
 

@@ -11,11 +11,13 @@ for file in ctl_list:
     segment_data = Array.analysis.segment_selection(param,data)
 
     freq,spac_coeff = Array.analysis.spac_coeff(param,segment_data,plot_flag=True)
-    _,_,_,fmin = Array.analysis.cca_coeff(param,segment_data,plot_flag=False)
+    freq,cca_coeff,ns_ratio,fmin = Array.analysis.cca_coeff(param,segment_data,plot_flag=False)
 
     freq_spac,vel_spac = Array.analysis.spac_phase_velocity(param,freq,spac_coeff,fmin=0.5*fmin,plot_flag=True)
-
     Array.io.output_data_file("spac.vel",param,freq_spac,vel_spac)
+
+    freq_cca,vel_cca = Array.analysis.cca_phase_velocity(param,freq,cca_coeff,plot_flag=False)
+    Array.io.output_data_file("cca.vel",param,freq_cca,vel_cca)
 
     fmin_list += [fmin]
 
