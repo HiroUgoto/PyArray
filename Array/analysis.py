@@ -387,6 +387,15 @@ def plot_phase_velocity(freq,vel):
         plt.grid()
         plt.show()
 
+def plot_hvsr(freq,hv):
+        plt.figure()
+        plt.xscale("log")
+        plt.yscale("log")
+        plt.xlabel("frequency (Hz)")
+        plt.ylabel("H/V spectrum")
+        plt.plot(freq,hv,color='r')
+        plt.grid()
+        plt.show()
 
 #-----------------------------------------------------------------#
 def hv_spactra(param,segment_data,plot_flag=True):
