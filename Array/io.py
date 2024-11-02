@@ -185,3 +185,9 @@ def output_hv_file(file_name,freq,hv):
     output_file_name = file_name
     output_line = np.c_[freq,hv]
     np.savetxt(output_file_name,output_line)
+
+#-----------------------------------------------------------------#
+def output_file(file_name,freq,val):
+    output_file_name = file_name
+    output_line = np.c_[freq,val]
+    np.savetxt(output_file_name,output_line)

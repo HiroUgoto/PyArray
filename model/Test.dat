@@ -1,0 +1,5 @@
+# number of layers
+2
+# vs[m/s], vp[m/s], rho[kg/m3], depth[m]
+1500 3000 2000 1500
+3000 5000 2500
