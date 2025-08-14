@@ -1,0 +1,5 @@
+# number of layers
+2
+# vs[m/s], vp[m/s], rho[kg/m3], depth[m]
+1800 3188 2350 2500
+3464 6000 2670
