@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import scipy.special, scipy.optimize
 from . import signal
 from . import rayleigh
+from . import haskell
 import sys
 
 #-----------------------------------------------------------------#
@@ -372,6 +373,12 @@ def model_phase_velocity(model,fmax=20,print_flag=False,plot_flag=False):
 #-----------------------------------------------------------------#
 def model_medium_response_py(model,fmax=8,nmode=1,print_flag=False,plot_flag=False):
     freq,resp,U = rayleigh.calc_medium_response_py(model["nlay"],model["vp"],model["vs"],model["density"],model["thick"],fmax=fmax,nmode=nmode,print_flag=print_flag,plot_flag=plot_flag)
+
+    return freq, resp
+
+#-----------------------------------------------------------------#
+def model_transfer_function_py(model,fmax=8,abs=True,print_flag=False,plot_flag=False):
+    freq,resp = haskell.calc_transfer_function_py(model["nlay"],model["vs"],model["density"],model["thick"],fmax=fmax,abs=abs,print_flag=print_flag,plot_flag=plot_flag)
 
     return freq, resp
 
